@@ -1,0 +1,43 @@
+-- Subquery in WHERE clause
+SELECT ename, sal
+FROM emp
+WHERE sal > (SELECT AVG(sal) FROM emp);
+
+-- Employees earning more than JONES
+SELECT ename, sal
+FROM emp
+WHERE sal > (SELECT sal FROM emp WHERE ename = 'JONES');
+
+-- Employees in the same department as SCOTT
+SELECT ename, deptno
+FROM emp
+WHERE deptno = (SELECT deptno FROM emp WHERE ename = 'SCOTT')
+AND ename != 'SCOTT';
+
+-- Correlated subquery
+SELECT e1.ename, e1.sal, e1.deptno
+FROM emp e1
+WHERE sal = (
+    SELECT MAX(sal)
+    FROM emp e2
+    WHERE e2.deptno = e1.deptno
+);
+
+-- EXISTS clause
+SELECT d.dname
+FROM dept d
+WHERE EXISTS (
+    SELECT 1
+    FROM emp e
+    WHERE e.deptno = d.deptno
+    AND e.sal > 3000
+);
+
+-- IN with subquery
+SELECT ename, job
+FROM emp
+WHERE deptno IN (
+    SELECT deptno
+    FROM dept
+    WHERE loc IN ('NEW YORK', 'CHICAGO')
+);
