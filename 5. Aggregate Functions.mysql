@@ -1,0 +1,30 @@
+-- Count employees per department
+SELECT deptno, COUNT(*) as emp_count 
+FROM emp 
+GROUP BY deptno;
+
+-- Average salary by job
+SELECT job, AVG(sal) as avg_salary 
+FROM emp 
+GROUP BY job;
+
+-- Maximum and minimum salaries
+SELECT MAX(sal) as max_sal, MIN(sal) as min_sal 
+FROM emp;
+
+-- Total salary by department (having clause)
+SELECT deptno, SUM(sal) as total_sal 
+FROM emp 
+GROUP BY deptno 
+HAVING SUM(sal) > 5000;
+
+-- Department-wise statistics
+SELECT 
+    d.dname,
+    COUNT(e.empno) as emp_count,
+    AVG(e.sal) as avg_sal,
+    MAX(e.sal) as max_sal,
+    MIN(e.sal) as min_sal
+FROM dept d
+LEFT JOIN emp e ON d.deptno = e.deptno
+GROUP BY d.deptno, d.dname;
