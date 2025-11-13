@@ -1,0 +1,35 @@
+-- Inner Join
+SELECT e.ename, e.job, d.dname, d.loc
+FROM emp e
+INNER JOIN dept d ON e.deptno = d.deptno;
+
+-- Left Join
+SELECT d.dname, COUNT(e.empno) as employee_count
+FROM dept d
+LEFT JOIN emp e ON d.deptno = e.deptno
+GROUP BY d.deptno, d.dname;
+
+-- Self Join (Employee and their Manager)
+SELECT 
+    e1.ename as Employee,
+    e1.job as Emp_Job,
+    e2.ename as Manager,
+    e2.job as Mgr_Job
+FROM emp e1
+LEFT JOIN emp e2 ON e1.mgr = e2.empno;
+
+-- Multiple table join
+SELECT 
+    e.ename,
+    e.sal,
+    d.dname,
+    s.grade
+FROM emp e
+JOIN dept d ON e.deptno = d.deptno
+JOIN salgrade s ON e.sal BETWEEN s.losal AND s.hisal;
+
+-- Cross Join (Cartesian Product)
+SELECT e.ename, p.pname
+FROM emp e
+CROSS JOIN project p
+WHERE e.deptno = p.deptno;
