@@ -1,0 +1,57 @@
+DELIMITER //
+
+-- Function to calculate bonus
+CREATE FUNCTION calculate_bonus(salary DECIMAL(7,2))
+RETURNS DECIMAL(7,2)
+DETERMINISTIC
+BEGIN
+    DECLARE bonus DECIMAL(7,2);
+    
+    IF salary < 1000 THEN
+        SET bonus = salary * 0.10;
+    ELSEIF salary < 2000 THEN
+        SET bonus = salary * 0.15;
+    ELSEIF salary < 3000 THEN
+        SET bonus = salary * 0.20;
+    ELSE
+        SET bonus = salary * 0.25;
+    END IF;
+    
+    RETURN bonus;
+END//
+
+-- Function to get employee level
+CREATE FUNCTION get_emp_level(salary DECIMAL(7,2))
+RETURNS VARCHAR(20)
+DETERMINISTIC
+BEGIN
+    DECLARE level VARCHAR(20);
+    
+    CASE
+        WHEN salary < 1500 THEN SET level = 'Junior';
+        WHEN salary < 3000 THEN SET level = 'Mid-Level';
+        WHEN salary < 4500 THEN SET level = 'Senior';
+        ELSE SET level = 'Executive';
+    END CASE;
+    
+    RETURN level;
+END//
+
+-- Function to calculate years of service
+CREATE FUNCTION years_of_service(hire_date DATE)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    RETURN FLOOR(DATEDIFF(CURDATE(), hire_date) / 365);
+END//
+
+DELIMITER ;
+
+-- Use functions
+SELECT 
+    ename,
+    sal,
+    calculate_bonus(sal) as bonus,
+    get_emp_level(sal) as level,
+    years_of_service(hiredate) as years
+FROM emp;
