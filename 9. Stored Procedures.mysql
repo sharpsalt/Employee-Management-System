@@ -1,0 +1,73 @@
+DELIMITER //
+
+-- Procedure to give raise
+CREATE PROCEDURE give_raise(
+    IN emp_id INT,
+    IN raise_percent DECIMAL(5,2)
+)
+BEGIN
+    UPDATE emp
+    SET sal = sal * (1 + raise_percent/100)
+    WHERE empno = emp_id;
+    
+    SELECT CONCAT('Salary updated for employee ', emp_id) as Message;
+END//
+
+-- Procedure to get department summary
+CREATE PROCEDURE get_dept_summary(
+    IN dept_id INT
+)
+BEGIN
+    SELECT 
+        COUNT(*) as total_employees,
+        AVG(sal) as avg_salary,
+        MAX(sal) as max_salary,
+        MIN(sal) as min_salary,
+        SUM(sal) as total_salary
+    FROM emp
+    WHERE deptno = dept_id;
+END//
+
+-- Procedure with OUT parameter
+CREATE PROCEDURE get_emp_count(
+    IN dept_id INT,
+    OUT emp_count INT
+)
+BEGIN
+    SELECT COUNT(*) INTO emp_count
+    FROM emp
+    WHERE deptno = dept_id;
+END//
+
+-- Procedure to transfer employee
+CREATE PROCEDURE transfer_employee(
+    IN emp_id INT,
+    IN new_dept INT
+)
+BEGIN
+    DECLARE old_dept INT;
+    
+    -- Get current department
+    SELECT deptno INTO old_dept
+    FROM emp
+    WHERE empno = emp_id;
+    
+    -- Update department
+    UPDATE emp
+    SET deptno = new_dept
+    WHERE empno = emp_id;
+    
+    -- Log the transfer
+    INSERT INTO emp_audit(empno, action, user)
+    VALUES(emp_id, CONCAT('Transfer from dept ', old_dept, ' to ', new_dept), USER());
+END//
+
+DELIMITER ;
+
+-- Call procedures
+CALL give_raise(7369, 10);
+CALL get_dept_summary(20);
+
+-- Call procedure with OUT parameter
+CALL get_emp_count(30, @count);
+SELECT @count as 'Employees in Dept 30';
