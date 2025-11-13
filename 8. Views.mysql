@@ -1,0 +1,29 @@
+-- Create Views
+CREATE VIEW emp_details AS
+SELECT 
+    e.empno,
+    e.ename,
+    e.job,
+    e.sal,
+    d.dname,
+    d.loc
+FROM emp e
+JOIN dept d ON e.deptno = d.deptno;
+
+-- View for high earners
+CREATE VIEW high_earners AS
+SELECT *
+FROM emp
+WHERE sal > 2500;
+
+-- View with calculated fields
+CREATE VIEW emp_annual_income AS
+SELECT 
+    ename,
+    sal * 12 as annual_salary,
+    IFNULL(comm * 12, 0) as annual_commission,
+    (sal * 12) + IFNULL(comm * 12, 0) as total_annual_income
+FROM emp;
+
+-- Query from view
+SELECT * FROM emp_details WHERE dname = 'RESEARCH';
