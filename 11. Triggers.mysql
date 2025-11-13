@@ -1,0 +1,44 @@
+DELIMITER //
+
+-- Trigger for salary audit
+CREATE TRIGGER salary_update_audit
+AFTER UPDATE ON emp
+FOR EACH ROW
+BEGIN
+    IF NEW.sal != OLD.sal THEN
+        INSERT INTO emp_audit(empno, action, old_sal, new_sal, user)
+        VALUES(NEW.empno, 'SALARY_UPDATE', OLD.sal, NEW.sal, USER());
+    END IF;
+END//
+
+-- Trigger to prevent salary decrease
+CREATE TRIGGER prevent_salary_decrease
+BEFORE UPDATE ON emp
+FOR EACH ROW
+BEGIN
+    IF NEW.sal < OLD.sal THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Salary cannot be decreased!';
+    END IF;
+END//
+
+-- Trigger for new employee
+CREATE TRIGGER new_employee_welcome
+AFTER INSERT ON emp
+FOR EACH ROW
+BEGIN
+    INSERT INTO emp_audit(empno, action, new_sal, user)
+    VALUES(NEW.empno, 'NEW_EMPLOYEE', NEW.sal, USER());
+END//
+
+-- Trigger to update department budget when project is added
+CREATE TRIGGER update_dept_budget
+AFTER INSERT ON project
+FOR EACH ROW
+BEGIN
+    UPDATE dept
+    SET loc = CONCAT(loc, '*')  -- Just a marker for demo
+    WHERE deptno = NEW.deptno;
+END//
+
+DELIMITER ;
