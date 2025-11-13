@@ -1,0 +1,60 @@
+CREATE TABLE dept (
+    deptno INT PRIMARY KEY,
+    dname VARCHAR(14) NOT NULL,
+    loc VARCHAR(13)
+);
+CREATE TABLE emp (
+    empno INT PRIMARY KEY,
+    ename VARCHAR(10) NOT NULL,
+    job VARCHAR(9),
+    mgr INT,
+    hiredate DATE,
+    sal DECIMAL(7,2),
+    comm DECIMAL(7,2),
+    deptno INT,
+    FOREIGN KEY (deptno) REFERENCES dept(deptno),
+    FOREIGN KEY (mgr) REFERENCES emp(empno)
+);
+
+CREATE TABLE salgrade (
+    grade INT PRIMARY KEY,
+    losal DECIMAL(7,2),
+    hisal DECIMAL(7,2)
+);
+
+CREATE TABLE bonus (
+    ename VARCHAR(10),
+    job VARCHAR(9),
+    sal DECIMAL(7,2),
+    comm DECIMAL(7,2)
+);
+
+CREATE TABLE project (
+    projectno INT PRIMARY KEY AUTO_INCREMENT,
+    pname VARCHAR(50) NOT NULL,
+    budget DECIMAL(10,2),
+    start_date DATE,
+    end_date DATE,
+    deptno INT,
+    FOREIGN KEY (deptno) REFERENCES dept(deptno)
+);
+
+CREATE TABLE emp_project (
+    empno INT,
+    projectno INT,
+    hours_worked INT DEFAULT 0,
+    role VARCHAR(50),
+    PRIMARY KEY (empno, projectno),
+    FOREIGN KEY (empno) REFERENCES emp(empno),
+    FOREIGN KEY (projectno) REFERENCES project(projectno)
+);
+
+CREATE TABLE emp_audit (
+    audit_id INT PRIMARY KEY AUTO_INCREMENT,
+    empno INT,
+    action VARCHAR(10),
+    old_sal DECIMAL(7,2),
+    new_sal DECIMAL(7,2),
+    user VARCHAR(50),
+    change_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
