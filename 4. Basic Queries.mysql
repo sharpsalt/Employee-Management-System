@@ -1,0 +1,31 @@
+SELECT * FROM emp;
+
+-- Display employees with salary > 2000
+SELECT empno, ename, job, sal 
+FROM emp 
+WHERE sal > 2000;
+
+-- Employees hired after 1981
+SELECT ename, hiredate 
+FROM emp 
+WHERE hiredate > '1981-12-31';
+
+-- Employees in specific departments
+SELECT ename, deptno 
+FROM emp 
+WHERE deptno IN (10, 20);
+
+-- Pattern matching
+SELECT ename 
+FROM emp 
+WHERE ename LIKE 'S%';
+
+-- Sorting
+SELECT ename, sal 
+FROM emp 
+ORDER BY sal DESC;
+
+-- NULL value handling
+SELECT ename, comm 
+FROM emp 
+WHERE comm IS NULL;
